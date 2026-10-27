@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<!--
+  ============================================================
+  mirobol.fr — Bac à sable / banc d'essai des projets (marque SV)
+  Version 1.0.0
+  ------------------------------------------------------------
+  Rôle : site de TEST, séparé de baiji.fr (la vitrine « propre »).
+  On y pose des projets en cours d'essai, chacun dans son dossier,
+  puis on les promeut vers baiji.fr quand ils sont prêts.
+
+  COMMENT AJOUTER UN TEST :
+  1. Crée un dossier à la racine du dépôt, ex. "essai-jeu/",
+     avec dedans au moins un "index.html".
+  2. Ajoute une ligne dans la liste TESTS ci-dessous (en bas) :
+        { nom: "Essai jeu", desc: "...", url: "essai-jeu/" }
+  → il apparaîtra sur cette page, accessible à mirobol.fr/essai-jeu/
+
+  Tant que la liste TESTS est vide, la page affiche un message
+  « aucun test en ligne » (c'est normal au départ).
+  ============================================================
+-->
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>mirobol — bac à sable</title>
+  <meta name="description" content="Banc d'essai des projets, sous la marque SV.">
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+
+  <!-- Police de la charte SV : Manrope (Google Fonts) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&display=swap" rel="stylesheet">
+
+  <style>
+    /* ---- COULEURS DE LA CHARTE SV (thème clair par défaut) ---- */
+    :root {
+      --surface:        #f6f9f9;
+      --surface-raised: #ffffff;
+      --line:           #d6e2e3;
+      --ink:            #102a2e;
+      --ink-muted:      #4d6468;
+      --teal:           #0f7c7b;
+      --on-teal:        #ffffff;
+      --teal-soft:      #d4ecea;
+      --accent:         #20b2a6;
+    }
+    /* ---- MODE SOMBRE AUTOMATIQUE (valeurs « Sombre » de la charte) ---- */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --surface:        #0e1a1c;
+        --surface-raised: #152427;
+        --line:           #26393c;
+        --ink:            #e6f1f1;
+        --ink-muted:      #9db3b5;
+        --teal:           #3cc2b8;
+        --on-teal:        #062022;
+        --teal-soft:      #1c4245;
+        --accent:         #5fe0d2;
+      }
+    }
+
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: "Manrope", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+      background: var(--surface);
+      color: var(--ink);
+      line-height: 1.5;
+      -webkit-font-smoothing: antialiased;
+      padding: 0 16px;
+    }
+
+    .page { max-width: 760px; margin: 0 auto; padding: 56px 0 72px; }
+
+    header { text-align: center; margin-bottom: 40px; }
+
+    .logo { width: 72px; height: 72px; margin: 0 auto 18px; display: block; color: var(--teal); }
+    .logo svg { width: 100%; height: 100%; display: block; }
+
+    h1 { font-size: 2rem; font-weight: 800; letter-spacing: -0.02em; }
+    h1 .ext { color: var(--teal); font-weight: 700; }
+
+    /* Petite étiquette « BANC D'ESSAI » pour bien distinguer de baiji.fr */
+    .ruban {
+      display: inline-block;
+      margin-top: 12px;
+      font-size: 0.7rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.1em;
+      color: var(--on-teal);
+      background: var(--teal);
+      border-radius: 999px;
+      padding: 4px 12px;
+    }
+
+    .tagline { color: var(--ink-muted); margin-top: 12px; font-size: 1rem; }
+
+    /* ---- GRILLE DE CARTES ---- */
+    .grille {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(240px, 1fr));
+      gap: 12px;
+    }
+
+    .carte {
+      background: var(--surface-raised);
+      border: 1px solid var(--line);
+      border-radius: 12px;
+      padding: 16px;
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      text-decoration: none;
+      color: inherit;
+      transition: transform .15s ease, border-color .15s ease;
+    }
+    .carte:hover { transform: translateY(-3px); border-color: var(--teal); }
+
+    .pastille {
+      flex: 0 0 44px; height: 44px;
+      border-radius: 10px;
+      background: var(--teal); color: var(--on-teal);
+      font-weight: 800; font-size: 1.15rem;
+      display: flex; align-items: center; justify-content: center;
+    }
+    .carte-texte { min-width: 0; }
+    .carte-nom  { font-weight: 700; font-size: 1.02rem; }
+    .carte-desc { color: var(--ink-muted); font-size: 0.86rem; margin-top: 2px; }
+
+    /* Message affiché quand il n'y a encore aucun test */
+    .vide {
+      text-align: center;
+      color: var(--ink-muted);
+      background: var(--teal-soft);
+      border-radius: 12px;
+      padding: 28px 20px;
+      font-size: 0.95rem;
+    }
+
+    footer { text-align: center; color: var(--ink-muted); font-size: 0.8rem; margin-top: 48px; }
+    footer .marque { color: var(--teal); font-weight: 700; }
+  </style>
+</head>
+
+<body>
+  <div class="page">
+
+    <header>
+      <!-- Logo SV « le geste », repris de la charte (une seule encre : currentColor) -->
+      <div class="logo" aria-label="Logo SV">
+        <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+          <path fill="currentColor" d="M6.78 46.08L7.79 45.75L8.80 45.40L9.83 45.06L10.87 44.70L11.91 44.34L12.96 43.97L14.02 43.61L15.08 43.23L16.15 42.85L17.23 42.47L18.31 42.09L19.40 41.70L20.49 41.32L21.59 40.93L22.69 40.54L23.80 40.15L24.91 39.76L26.02 39.38L27.13 38.99L28.25 38.61L29.36 38.23L30.48 37.85L31.60 37.47L32.72 37.10L33.84 36.73L34.96 36.37L36.08 36.01L37.20 35.66L38.32 35.31L39.43 34.97L40.55 34.64L41.65 34.32L42.76 34.00L43.86 33.70L44.96 33.40L46.06 33.11L47.15 32.83L48.23 32.57L49.31 32.31L50.38 32.07L51.45 31.84L52.51 31.62L53.56 31.41L54.61 31.22L55.64 31.04L56.67 30.87L57.69 30.72L58.71 30.59A1.80 1.80 0 0 0 58.29 27.01L57.24 27.12L56.17 27.24L55.09 27.38L54.01 27.53L52.91 27.70L51.82 27.88L50.71 28.07L49.60 28.28L48.49 28.50L47.37 28.73L46.24 28.97L45.11 29.23L43.98 29.49L42.85 29.76L41.71 30.04L40.57 30.33L39.42 30.63L38.28 30.94L37.13 31.25L35.99 31.57L34.84 31.89L33.69 32.22L32.55 32.56L31.40 32.90L30.26 33.25L29.12 33.59L27.97 33.95L26.84 34.30L25.70 34.65L24.57 35.01L23.44 35.37L22.31 35.73L21.19 36.09L20.08 36.45L18.97 36.80L17.86 37.16L16.77 37.51L15.68 37.86L14.59 38.21L13.51 38.55L12.45 38.89L11.39 39.23L10.33 39.56L9.29 39.89L8.26 40.20L7.24 40.52L6.23 40.82L5.22 41.12A2.60 2.60 0 0 0 6.78 46.08ZM59.78 27.68L59.55 27.43L59.28 27.16L59.00 26.91L58.70 26.67L58.40 26.43L58.08 26.21L57.76 26.00L57.42 25.80L57.08 25.61L56.73 25.43L56.37 25.25L56.00 25.08L55.62 24.93L55.24 24.77L54.85 24.63L54.45 24.49L54.05 24.36L53.63 24.24L53.22 24.12L52.80 24.01L52.37 23.91L51.93 23.81L51.50 23.72L51.05 23.63L50.61 23.55L50.16 23.48L49.70 23.41L49.25 23.34L48.79 23.28L48.32 23.23L47.86 23.18L47.39 23.14L46.92 23.10L46.45 23.07L45.98 23.04L45.51 23.02L45.04 23.00L44.56 22.98L44.09 22.97L43.62 22.97L43.15 22.97L42.68 22.98L42.22 22.99L41.75 23.00L41.29 23.02L40.83 23.04L40.38 23.07L39.93 23.10A1.30 1.30 0 0 0 40.07 25.70L40.50 25.68L40.93 25.67L41.36 25.67L41.80 25.67L42.24 25.67L42.68 25.68L43.12 25.69L43.56 25.70L44.01 25.72L44.45 25.75L44.89 25.78L45.34 25.81L45.78 25.85L46.22 25.89L46.66 25.94L47.09 25.99L47.52 26.04L47.95 26.11L48.38 26.17L48.80 26.24L49.22 26.32L49.64 26.40L50.04 26.48L50.45 26.57L50.84 26.66L51.23 26.76L51.61 26.86L51.99 26.97L52.35 27.08L52.71 27.20L53.06 27.32L53.40 27.45L53.73 27.58L54.05 27.71L54.36 27.85L54.66 27.99L54.94 28.14L55.22 28.28L55.48 28.44L55.72 28.59L55.96 28.75L56.18 28.91L56.38 29.07L56.58 29.23L56.75 29.40L56.91 29.56L57.06 29.72L57.22 29.92A1.70 1.70 0 0 0 59.78 27.68ZM40.56 25.46L40.92 25.26L41.28 25.07L41.63 24.88L41.99 24.69L42.35 24.52L42.70 24.35L43.06 24.18L43.41 24.02L43.77 23.87L44.12 23.72L44.48 23.58L44.83 23.44L45.19 23.31L45.54 23.18L45.89 23.06L46.25 22.94L46.60 22.83L46.95 22.72L47.30 22.62L47.65 22.52L48.00 22.43L48.35 22.34L48.69 22.26L49.04 22.18L49.39 22.11L49.73 22.04L50.07 21.98L50.42 21.92L50.76 21.87L51.10 21.82L51.43 21.77L51.77 21.73L52.11 21.70L52.44 21.67L52.77 21.64L53.10 21.62L53.43 21.60L53.76 21.58L54.08 21.57L54.41 21.56L54.73 21.56L55.05 21.56L55.37 21.57L55.68 21.57L55.99 21.59L56.31 21.60L56.62 21.62L56.93 21.65A0.65 0.65 0 0 0 57.07 20.35L56.76 20.31L56.43 20.26L56.11 20.22L55.78 20.19L55.45 20.15L55.11 20.12L54.78 20.10L54.44 20.08L54.09 20.06L53.75 20.05L53.40 20.04L53.05 20.04L52.70 20.04L52.35 20.05L51.99 20.06L51.64 20.07L51.28 20.09L50.92 20.12L50.55 20.15L50.19 20.18L49.82 20.22L49.45 20.26L49.08 20.31L48.71 20.37L48.34 20.42L47.96 20.49L47.58 20.56L47.20 20.63L46.83 20.71L46.44 20.80L46.06 20.89L45.68 20.99L45.29 21.09L44.91 21.20L44.52 21.31L44.14 21.43L43.75 21.56L43.36 21.69L42.97 21.83L42.58 21.97L42.19 22.12L41.79 22.27L41.40 22.44L41.01 22.60L40.62 22.78L40.22 22.96L39.83 23.15L39.44 23.34A1.20 1.20 0 0 0 40.56 25.46Z"></path>
+        </svg>
+      </div>
+
+      <h1>mirobol<span class="ext">.fr</span></h1>
+      <span class="ruban">Banc d'essai</span>
+      <p class="tagline">Les projets en cours de test, avant leur passage sur baiji.fr</p>
+    </header>
+
+    <!-- La liste des tests est injectée ici par le script ci-dessous -->
+    <main id="contenu"></main>
+
+    <footer>
+      <p>Bac à sable de la marque <span class="marque">SV</span> · mirobol.fr · v1.0.0</p>
+    </footer>
+
+  </div>
+
+  <script>
+    /*
+      ============================================================
+      LISTE DES TESTS
+      ------------------------------------------------------------
+      Un objet par test : { nom, desc, url }
+        - url = le dossier du test, ex. "essai-jeu/"
+      Au départ la liste est VIDE → la page affiche un message.
+      Exemple (à décommenter et adapter quand tu ajoutes un test) :
+
+      { nom: "Essai jeu", desc: "Prototype à essayer", url: "essai-jeu/" },
+      ============================================================
+    */
+    const TESTS = [
+      // ← ajoute tes tests ici, un par ligne
+    ];
+
+    const contenu = document.getElementById("contenu");
+
+    if (TESTS.length === 0) {
+      // Aucun test : on affiche un message d'attente
+      contenu.innerHTML = `<div class="vide">
+        Aucun test en ligne pour l'instant.<br>
+        Dépose un dossier (ex. <b>essai-jeu/</b>) puis ajoute-le dans la liste TESTS.
+      </div>`;
+    } else {
+      // Sinon on construit une carte cliquable par test
+      const grille = document.createElement("div");
+      grille.className = "grille";
+
+      TESTS.forEach(test => {
+        const carte = document.createElement("a");
+        carte.className = "carte";
+        carte.href = test.url;
+        const initiale = test.nom.trim().charAt(0).toUpperCase();
+        carte.innerHTML = `
+          <div class="pastille">${initiale}</div>
+          <div class="carte-texte">
+            <div class="carte-nom">${test.nom}</div>
+            <div class="carte-desc">${test.desc}</div>
+          </div>
+        `;
+        grille.appendChild(carte);
+      });
+
+      contenu.appendChild(grille);
+    }
+  </script>
+</body>
+</html>
