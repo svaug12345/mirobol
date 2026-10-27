@@ -2,7 +2,8 @@
 <!--
   ============================================================
   mirobol.fr — Bac à sable / banc d'essai des projets (marque SV)
-  Version 1.0.0
+  Version 1.1.0
+  (v1.1.0 : ajout de la serrure d'accès + log des visites, via gate.js)
   ------------------------------------------------------------
   Rôle : site de TEST, séparé de baiji.fr (la vitrine « propre »).
   On y pose des projets en cours d'essai, chacun dans son dossier,
@@ -23,6 +24,11 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Serrure de curiosité + log des visites (code et explications dans gate.js).
+       Placé tout en haut pour s'exécuter avant l'affichage de la page. -->
+  <script src="/gate.js"></script>
+
   <title>mirobol — bac à sable</title>
   <meta name="description" content="Banc d'essai des projets, sous la marque SV.">
   <link rel="icon" href="favicon.svg" type="image/svg+xml">
@@ -164,7 +170,7 @@
     <main id="contenu"></main>
 
     <footer>
-      <p>Bac à sable de la marque <span class="marque">SV</span> · mirobol.fr · v1.0.0</p>
+      <p>Bac à sable de la marque <span class="marque">SV</span> · mirobol.fr · v1.1.0</p>
     </footer>
 
   </div>
