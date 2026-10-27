@@ -1,6 +1,7 @@
 /* ============================================================
    gate.js — petite « serrure de curiosité » + log des visites
-   Version 1.0.0
+   Version 1.0.1
+   (1.0.1 : ajout de l'étiquette SITE dans le log)
    ------------------------------------------------------------
    À inclure TOUT EN HAUT du <head> de chaque page à protéger :
        <script src="/gate.js"></script>
@@ -19,6 +20,7 @@
 
   /* ---- RÉGLAGES (les seules lignes à modifier au besoin) ---- */
   const CODE        = "aaaa";          // le code d'accès à saisir
+  const SITE        = "mirobol";       // nom du site, ajouté au journal pour distinguer baiji / mirobol
   const CLE_SESSION = "mirobol_ok";    // mémorise le déverrouillage le temps de l'onglet
   const LOG_URL     = "";              // ← URL de ton Apps Script (laisse vide = pas de log)
 
@@ -32,6 +34,7 @@
     if (!LOG_URL) return;              // pas d'URL configurée → on ne logge rien
     try {
       const params = new URLSearchParams({
+        site: SITE,                    // quel site (baiji / mirobol)
         page: location.pathname,       // quelle page a été ouverte
         ev:   evenement,               // "visite" (arrivée) ou "ok" (code validé)
         ua:   navigator.userAgent      // navigateur / appareil
